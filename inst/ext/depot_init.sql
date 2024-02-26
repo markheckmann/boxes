@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS DEPOT (
   info TEXT,
   tags TEXT,
   class TEXT,
-  misc BLOB
+  changed TIMESTAMP
 );

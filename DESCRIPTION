@@ -18,6 +18,8 @@ Imports:
     readr,
     fs,
     hoardr,
-    stringr
+    stringr,
+    tibble,
+    lubridate
 Suggests:
     styler

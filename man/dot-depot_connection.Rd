@@ -4,12 +4,13 @@
 \alias{.depot_connection}
 \title{Create depot database connection}
 \usage{
-.depot_connection(name, must_exist = FALSE)
+.depot_connection(name = NULL, must_exist = TRUE)
 }
 \arguments{
-\item{name}{Depot name.}
+\item{name}{Depot names. If `NULL`, the active depot is used (`depot_active()`).}
 
-\item{must_exist}{Security mechanism. Will prevent creation of databse if it does not already exists.}
+\item{must_exist}{Security mechanism. If `TRUE` (default), prevents creating a database with the given name, if it
+does not yet exist.}
 }
 \value{
 Connection object.

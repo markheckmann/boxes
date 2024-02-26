@@ -4,10 +4,12 @@
 \alias{depot_create}
 \title{Create a new depot}
 \usage{
-depot_create(name)
+depot_create(name, activate = TRUE)
 }
 \arguments{
 \item{name}{Depot name.}
+
+\item{activate}{Activate depot after creation? Default is `TRUE`.}
 }
 \description{
 Create a new depot

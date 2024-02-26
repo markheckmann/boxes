@@ -4,7 +4,7 @@
 
 
 # from stats::setNames
-set_names <- function (object = nm, nm) {
+set_names <- function(object = nm, nm) {
   names(object) <- nm
   object
 }

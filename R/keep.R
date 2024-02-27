@@ -191,6 +191,75 @@ depot_show <- function(name = NULL) {
 }
 
 
+# Check that depot works
+depot_works <- function(name) {
+  tryCatch(is.integer(depot_size(name)), error = \(e) {FALSE})
+}
+
+
+#' Export depot to a file
+#'
+#' The exported depot file contains the depot name, the original depot path and its name and the databse itself.
+#'
+#' @param name Depot name.
+#' @param file Where to store the depot. We suggest the file ending (`.depot`).
+#' If `NULL`, the depot is exported to the current working dir.
+#' @export
+depot_export <- function(name, file = NULL) {
+  file <- file %||% glue("{name}.depot") # default name
+  out_dir <- dirname(file)
+  out_dir_exists <- fs::dir_exists(out_dir)
+  if (!out_dir_exists) {
+    cli::cli_abort("Folder not found: {.path {out_dir}}. Can only save to existing folder.")
+  }
+  d_path <- depot_path(name)
+  db <- readBin(d_path, what = "raw", n = file.info(d_path)$size)
+  l <- list(
+    name = name,
+    db = db,
+    pkg_version = utils::packageVersion("keeper")
+  )
+  class(l) <- c("keeper_export", class(l))
+  qs::qsave(l, file)
+  cli::cli_alert_info("Depot file saved as {.path {file}}")
+}
+
+
+#' Import depot from file
+#' @param file Path to depot file.
+#' @param name Depot name to use for imported data. If `NULL`, the original name (before export) will be used.
+#' @param overwrite Overwrite if depot with name already exists?
+#' @param activate Activate depot after import?
+#' @export
+depot_import <- function(file, name = NULL, overwrite = FALSE, activate = FALSE) {
+  if (!fs::file_exists(file)) {
+    cli::cli_abort("File not found: {.path {file}}")
+  }
+  l <- tryCatch(qs::qread(file), error = \(e) e)
+  if (!inherits(l, "keeper_export")) {
+    cli::cli_abort("File cannot be read. Does not seem to be a depot export.")
+  }
+  if (is.null(name)) {
+    name <- l$name
+    cli::cli_alert_info("No name provided. Using original name {.emph {name}}")
+  }
+  if (!overwrite && depot_exists(name)) {
+    cli::cli_abort("depot {.emph {name}} already exists. Set {.code overwrite=TRUE} to replace it.")
+  }
+  h <- get_hoard()
+  db_path <- file.path(h$cache_path_get(), glue("{name}.db"))
+  writeBin(l$db, db_path)
+  if (!depot_works(name)) {  # delete of depot is corrupted
+    fs::file_delete(db_path)
+    cli::cli_abort("Depot cannot be imported. File appears to be corrupted.")
+  }
+  cli::cli_alert_info("Imported {.path {basename(file)}} as depot {.emph {name}}")
+  if (activate) depot_activate(name)
+  invisible(name)
+}
+
+
+
 # __________ -----
 # KEEP ------------------------------------------------------------
 
@@ -246,20 +315,44 @@ keep <- function(id, obj, info = NULL, tags = NULL) {
 }
 
 
-retrieve_object <- function(res) {
-  res$object |> unlist() |> qs::qdeserialize()
+#' Keep object for later use.
+#' @param id Unique ID of storage slot.
+#' @param path File path.
+#' @param info Some information about the object.
+#' @param tags One or more tags (character vector or comma separated string)
+#' @export
+#' @examples
+#' file <- system.file("ext/depot_init.sql", package = "keeper")
+#' keep_file("code", file, "some SQL code")
+keep_file <- function(id, path, info = NULL, tags = NULL) {
+  id <- as.character(id)
+  if (!fs::is_file(path)) {
+    cli::cli_abort("File does not exist: {.file {path}}")
+  }
+  s <- readBin(path, what = "raw", n = file.info(path)$size)
+  df <- tibble::tibble(
+    id = id,
+    object = list(s),
+    info = info,
+    tags = paste(tags, collapse = ","),
+    class = glue("filetype: .{fs::path_ext(path)}"),
+    changed = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+  )
+  id_delete(id)
+  con <- .depot_connection()
+  on.exit(dbDisconnect(con))
+  dbWriteTable(con, "depot", df, append = TRUE)
 }
 
 
-get_object_by_id <- function(id, depot = NULL) {
-  id <- as.character(id)
-  con <- .depot_connection(depot)
-  id_exists <- id %in% ids_get(depot)
-  if (!id_exists) {
-    cli::cli_alert_warning("id {.emph {id}} not found.")
-    invisible(return(NULL))
-  }
-  query <- "select * from depot where id"
+
+
+# __________ -----
+# PICK ------------------------------------------------------------
+
+
+retrieve_object <- function(res) {
+  res$object |> unlist() |> qs::qdeserialize()
 }
 
 

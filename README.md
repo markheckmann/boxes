@@ -9,8 +9,8 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange)]()
 <!-- badges -->
 
-The goal of keeper is to make it easy to store any R object on disk and
-retrieve it later.
+The goal of `keeper` is to make it easy to store any R object or files
+and retrieve them later.
 
 ## Installation
 

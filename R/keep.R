@@ -182,7 +182,7 @@ remove_fileext <- function(x) {
 #' @param name Depot names. If `NULL`, the active depot is used (`depot_active()`).
 #' @returns Tibble with depot content.
 #' @export
-depot_show <- function(name = NULL) {
+depot <- function(name = NULL) {
   con <- .depot_connection(name = name)
   on.exit(dbDisconnect(con))
   res <- dbGetQuery(con, "select * from depot") |> as_tibble()
@@ -206,6 +206,7 @@ depot_works <- function(name) {
 #' If `NULL`, the depot is exported to the current working dir.
 #' @export
 depot_export <- function(name, file = NULL) {
+  force(name) # clearer error message if name is missing
   file <- file %||% glue("{name}.depot") # default name
   out_dir <- dirname(file)
   out_dir_exists <- fs::dir_exists(out_dir)
@@ -299,6 +300,9 @@ ids_get <- function(depot = NULL) {
 #' @export
 keep <- function(id, obj, info = NULL, tags = NULL) {
   id <- as.character(id)
+  if (length(id) == 0 || id == "") {
+    cli::cli_abort("{.arg id} must have at least one character.")
+  }
   id_delete(id)
   df <- tibble(
     id = id,
@@ -367,7 +371,7 @@ pick <- function(id, depot = NULL) {
   id_exists <- id %in% ids_get(depot)
   if (!id_exists) {
     cli::cli_alert_warning("id {.emph {id}} not found.")
-    invisible(return(NULL))
+    return(invisible(NULL))
   }
   id <- DBI::dbQuoteString(con, id)
   query <- glue("select object from depot where id = {id}")

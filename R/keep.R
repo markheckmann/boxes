@@ -87,7 +87,8 @@ depot_active <- function() {
 #' @export
 depot_path <- function(name = NULL) {
   name <- name %||% depot_active()
-  df <- depot_details()
+  df <- depots()
+  path <- NULL  # avoid R CMD CHECK note
   df |> dplyr::filter(name == !!name) |> dplyr::pull(path)
 }
 
@@ -96,8 +97,8 @@ depot_path <- function(name = NULL) {
 .depot_size <- function(name = NULL) {
   .abort_if_depot_not_exists(name)
   con <- .depot_connection(name)
+  on.exit(dbDisconnect(con))
   res <- dbGetQuery(con, "select count(*) as no_of_objects from depot")
-  dbDisconnect(con)
   res |>
     unlist() |>
     unname()
@@ -183,8 +184,9 @@ remove_fileext <- function(x) {
 #' @export
 depot_show <- function(name = NULL) {
   con <- .depot_connection(name = name)
+  on.exit(dbDisconnect(con))
   res <- dbGetQuery(con, "select * from depot") |> as_tibble()
-  dbDisconnect(con)
+  changed <- NULL  # avoid R CMD CHECK note
   res |> mutate(changed = lubridate::as_datetime(changed))
 }
 
@@ -238,8 +240,8 @@ keep <- function(id, obj, info = NULL, tags = NULL) {
     changed = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   )
   con <- .depot_connection()
+  on.exit(dbDisconnect(con))
   res <- dbWriteTable(con, "depot", df, append = TRUE)
-  dbDisconnect(con)
   invisible(res)
 }
 
@@ -268,6 +270,7 @@ get_object_by_id <- function(id, depot = NULL) {
 pick <- function(id, depot = NULL) {
   id <- as.character(id)
   con <- .depot_connection(depot)
+  on.exit(dbDisconnect(con))
   id_exists <- id %in% ids_get(depot)
   if (!id_exists) {
     cli::cli_alert_warning("id {.emph {id}} not found.")

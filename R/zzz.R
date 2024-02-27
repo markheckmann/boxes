@@ -1,6 +1,6 @@
 globalVariables(".h")
 
-# we use hoardr to manage keeper objects on disk.
+# we use hoardr to manage objects on disk.
 .keeper_env <- rlang::env(
   hoard = hoardr::hoard(),
   depot = NULL

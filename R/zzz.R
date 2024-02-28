@@ -1,13 +1,13 @@
 globalVariables(".h")
 
 # we use hoardr to manage objects on disk.
-.keeper_env <- rlang::env(
+.boxed_env <- rlang::env(
   hoard = hoardr::hoard(),
-  depot = NULL
-)
+  box = NULL
+)#
 
 
-get_default_depot_name <- function() {
+get_default_box_name <- function() {
   tryCatch(
     {
       Sys.info()[["user"]]
@@ -20,47 +20,47 @@ get_default_depot_name <- function() {
 
 # there is one hoard object to manage all objects
 get_hoard <- function() {
-  .keeper_env$hoard
+  .boxed_env$hoard
 }
 
 
-get_depot <- function() {
-  .keeper_env$depot
+get_box <- function() {
+  .boxed_env$box
 }
 
 
-set_depot <- function(name) {
-  .keeper_env$depot <- name
+set_box <- function(name) {
+  .boxed_env$box <- name
 }
 
 
 .onLoad <- function(lib, pkg) {
   options(
-    keeper.silent = FALSE,
-    keeper.fileext = "db",
-    keeper.default_depot = get_default_depot_name()
+    boxed.silent = FALSE,
+    boxed.fileext = "db",
+    boxed.default_box = get_default_box_name()
   )
 
-  # init depot folder on startup
+  # init box folder on startup
   h <- get_hoard()
-  h$cache_path_set(path = "keeper")
+  h$cache_path_set(path = "boxed")
   h$mkdir()
 
-  # init default depot
+  # init default box
   name <- .opt_default()
-  if (!depot_exists(name)) {
-    depot_create(name)
-    cli::cli_alert_info("Created default depot {.emph {name}}")
+  if (!box_exists(name)) {
+    box_create(name)
+    cli::cli_alert_info("Created default box {.emph {name}}")
   }
-  depot_activate(name)
+  box_activate(name)
 }
 
 
 .opt_silent <- function() {
-  options()$keeper.silent
+  options()$boxed.silent
 }
 
 # convenience wrapper to get default shelf name
 .opt_default <- function() {
-  options()$keeper.default_depot
+  options()$boxed.default_box
 }

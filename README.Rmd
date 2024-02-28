@@ -11,8 +11,8 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-library(keeper)
-depot_delete("test")
+library(boxed)
+box_delete("test")
 ```
 
 # keeper
@@ -26,8 +26,8 @@ The goal of `keeper` is to provide a convenient way to store R objects or arbitr
 
 To use the package, you need to know a few terms:
 
-  * `box`: A container to store things. These things can be R objects or files.
-  * `ìtem`: Anything that is stored inside the a `box`. 
+  * `box`: A container to store things. Things can be R objects or files.
+  * `item`: Anything that is stored inside the a box. 
   * `pack`: adding an item to a box.
   * `pick`: retrieving an item from a box.
 
@@ -37,13 +37,13 @@ Technically, each box is a separate SQLite database. You can create as many boxe
 ## Usage
 
 ```{r example}
-library(keeper)
-depot_create("test")
-depot_active()
-depots()
-depot()
-keep("my_data", mtcars, "Data to keep for later")
-depot()
+library(boxed)
+box_create("test")
+box_active()
+boxes()
+box()
+pack("my_data", mtcars, "Data to keep for later")
+box()
 df <- pick("my_data")
 identical(df, mtcars)
 ```

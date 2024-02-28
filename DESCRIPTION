@@ -1,7 +1,7 @@
-Package: keeper
+Package: boxed
 Type: Package
-Title: Easily keep and retrieve R objects
-Version: 0.1.0
+Title: Easily store and retrieve R objects
+Version: 0.1.1
 Author: Mark Heckmann <heckmann.mark@gmail.com>
 Maintainer: Mark Heckmann <heckmann.mark@gmail.com>
 Description: Useful tools to easily store any R objects and retrieve them again later.

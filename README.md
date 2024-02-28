@@ -15,9 +15,8 @@ later.
 
 To use the package, you need to know a few terms:
 
-- `box`: A container to store things. These things can be R objects or
-  files.
-- `ìtem`: Anything that is stored inside the a `box`.
+- `box`: A container to store things. Things can be R objects or files.
+- `item`: Anything that is stored inside the a box.
 - `pack`: adding an item to a box.
 - `pick`: retrieving an item from a box.
 
@@ -28,26 +27,26 @@ SQLite database. You can create as many boxes as you need.
 ## Usage
 
 ``` r
-library(keeper)
-depot_create("test")
-depot_active()
+library(boxed)
+box_create("test")
+box_active()
 #> [1] "test"
-depots()
+boxes()
 #> # A tibble: 2 × 6
 #>   name        path        size n_objects modified            created            
 #>   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-#> 1 markheckma… …ckmann.db   12K         3 2024-02-28 10:48:18 2024-02-27 23:32:06
-#> 2 test        …r/test.db   12K         0 2024-02-28 10:52:56 2024-02-28 10:52:56
-depot()
+#> 1 markheckma… …ckmann.db   12K         1 2024-02-28 11:43:58 2024-02-28 11:25:40
+#> 2 test        …d/test.db   12K         0 2024-02-28 11:47:07 2024-02-28 11:47:06
+box()
 #> # A tibble: 0 × 6
 #> # ℹ 6 variables: id <chr>, object <blob>, info <chr>, tags <chr>, class <chr>,
 #> #   changed <dttm>
-keep("my_data", mtcars, "Data to keep for later")
-depot()
+pack("my_data", mtcars, "Data to keep for later")
+box()
 #> # A tibble: 1 × 6
 #>   id             object info                   tags  class   changed            
 #>   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-#> 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-02-28 10:52:56
+#> 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-02-28 11:47:07
 df <- pick("my_data")
 identical(df, mtcars)
 #> [1] TRUE

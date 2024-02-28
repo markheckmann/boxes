@@ -11,6 +11,8 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(keeper)
+depot_delete("test")
 ```
 
 # keeper
@@ -20,7 +22,31 @@ knitr::opts_chunk$set(
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange)]()
 <!-- badges -->
 
-The goal of `keeper` is to make it easy to store any R object or files and retrieve them later.
+The goal of `keeper` is to provide a convenient way to store R objects or arbitrary files (plus additional notes) and retrieve them again later. 
+
+To use the package, you need to know a few terms:
+
+  * `box`: A container to store things. These things can be R objects or files.
+  * `ìtem`: Anything that is stored inside the a `box`. 
+  * `pack`: adding an item to a box.
+  * `pick`: retrieving an item from a box.
+
+Boxes are stored on your disk. Hence, anything put into it will remain there until you delete the box.
+Technically, each box is a separate SQLite database. You can create as many boxes as you need.
+
+## Usage
+
+```{r example}
+library(keeper)
+depot_create("test")
+depot_active()
+depots()
+depot()
+keep("my_data", mtcars, "Data to keep for later")
+depot()
+df <- pick("my_data")
+identical(df, mtcars)
+```
 
 ## Installation
 
@@ -28,11 +54,5 @@ You can install the development version of keeper like so:
 
 ```r
 # TBD
-```
-
-## Example
-
-```{r example}
-library(keeper)
 ```
 

@@ -4,11 +4,22 @@
 \alias{depot_delete}
 \title{Delete depot}
 \usage{
-depot_delete(name)
+depot_delete(name, ..., .skip = TRUE)
 }
 \arguments{
 \item{name}{Depot name(s) to delete.}
+
+\item{...}{More comma separated depot names (optional).}
+
+\item{.skip}{Skip depot if it does not exist (default is `TRUE`).}
 }
 \description{
-Delete depot
+Delete one or more depots. If a depot does not exist it is skipped.
+}
+\examples{
+\dontrun{
+  depot_delete("a")
+  depot_delete(c("a", "b"))
+  depot_delete("a", "b")  # same as above
+}
 }

@@ -53,14 +53,42 @@ depot_create <- function(name, activate = TRUE) {
 }
 
 
-#' Delete depot
-#' @param name Depot name(s) to delete.
-#' @export
-depot_delete <- function(name) {
-  db_names <- .depot_make_name(name)
-  h <- get_hoard()
-  for (db_name in db_names) {
+# delete one depot. Issue warning if it does not exist
+# name: depot name
+# .skip: depot must exist. Throw error otherwise.
+.depot_delete <- function(name, .skip = TRUE) {
+  exists <- depot_exists(name)
+  if (!.skip && !exists) {
+    cli::cli_abort("Cannot delete depot {.emph {name}} as it does not exist.")
+  }
+  if (exists) {
+    db_name <- .depot_make_name(name)
+    h <- get_hoard()
     h$delete(db_name)
+  } else {
+    cli::cli_alert_warning("Skipped {.emph {name}}, depot does not exist.")
+  }
+}
+
+
+#' Delete depot
+#'
+#' Delete one or more depots. If a depot does not exist it is skipped.
+#'
+#' @param name Depot name(s) to delete.
+#' @param ... More comma separated depot names (optional).
+#' @param .skip Skip depot if it does not exist (default is `TRUE`).
+#' @export
+#' @examples \dontrun{
+#'   depot_delete("a")
+#'   depot_delete(c("a", "b"))
+#'   depot_delete("a", "b")  # same as above
+#' }
+depot_delete <- function(name, ..., .skip = TRUE) {
+  dots <- list(...)
+  name <- c(name, unlist(dots)) |> unique()
+  for (nm in name) {
+    .depot_delete(nm, .skip = .skip)
   }
 }
 

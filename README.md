@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# keeper
+# boxed
 
 <!-- badges -->
 
@@ -9,9 +9,8 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange)]()
 <!-- badges -->
 
-The goal of `keeper` is to provide a convenient way to store R objects
-or arbitrary files (plus additional notes) and retrieve them again
-later.
+The goal of `boxed` is to provide a convenient way to store R objects or
+arbitrary files (plus additional notes) and retrieve them again later.
 
 To use the package, you need to know a few terms:
 
@@ -28,15 +27,15 @@ SQLite database. You can create as many boxes as you need.
 
 ``` r
 library(boxed)
-box_create("test")
-box_active()
-#> [1] "test"
 boxes()
-#> # A tibble: 2 × 6
+#> # A tibble: 1 × 6
 #>   name        path        size n_objects modified            created            
 #>   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-#> 1 markheckma… …ckmann.db   12K         1 2024-02-28 11:43:58 2024-02-28 11:25:40
-#> 2 test        …d/test.db   12K         0 2024-02-28 11:47:07 2024-02-28 11:47:06
+#> 1 markheckma… …ckmann.db   12K         1 2024-02-28 12:06:02 2024-02-28 11:25:40
+box_create("test")
+#> ℹ Activated box test
+box_active()
+#> [1] "test"
 box()
 #> # A tibble: 0 × 6
 #> # ℹ 6 variables: id <chr>, object <blob>, info <chr>, tags <chr>, class <chr>,
@@ -46,15 +45,26 @@ box()
 #> # A tibble: 1 × 6
 #>   id             object info                   tags  class   changed            
 #>   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-#> 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-02-28 11:47:07
+#> 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-02-28 12:11:29
 df <- pick("my_data")
 identical(df, mtcars)
 #> [1] TRUE
+remove("my_data")
+box()
+#> # A tibble: 0 × 6
+#> # ℹ 6 variables: id <chr>, object <blob>, info <chr>, tags <chr>, class <chr>,
+#> #   changed <dttm>
+box_delete("test")
+boxes()
+#> # A tibble: 1 × 6
+#>   name        path        size n_objects modified            created            
+#>   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
+#> 1 markheckma… …ckmann.db   12K         1 2024-02-28 12:06:02 2024-02-28 11:25:40
 ```
 
 ## Installation
 
-You can install the development version of keeper like so:
+You can install the development version of `boxed` like so:
 
 ``` r
 # TBD

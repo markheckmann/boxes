@@ -15,14 +15,14 @@ library(boxed)
 box_delete("test")
 ```
 
-# keeper
+# boxed
 
 <!-- badges -->
 [![R](https://img.shields.io/badge/language-R-blue)]()
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange)]()
 <!-- badges -->
 
-The goal of `keeper` is to provide a convenient way to store R objects or arbitrary files (plus additional notes) and retrieve them again later. 
+The goal of `boxed` is to provide a convenient way to store R objects or arbitrary files (plus additional notes) and retrieve them again later. 
 
 To use the package, you need to know a few terms:
 
@@ -38,19 +38,23 @@ Technically, each box is a separate SQLite database. You can create as many boxe
 
 ```{r example}
 library(boxed)
+boxes()
 box_create("test")
 box_active()
-boxes()
 box()
 pack("my_data", mtcars, "Data to keep for later")
 box()
 df <- pick("my_data")
 identical(df, mtcars)
+remove("my_data")
+box()
+box_delete("test")
+boxes()
 ```
 
 ## Installation
 
-You can install the development version of keeper like so:
+You can install the development version of `boxed` like so:
 
 ```r
 # TBD

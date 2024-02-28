@@ -2,7 +2,7 @@
 % Please edit documentation in R/box.R
 \name{box}
 \alias{box}
-\title{Show box storage content}
+\title{Show box content}
 \usage{
 box(name = NULL)
 }
@@ -13,5 +13,5 @@ box(name = NULL)
 Tibble with box content.
 }
 \description{
-Show box storage content
+Show box content
 }

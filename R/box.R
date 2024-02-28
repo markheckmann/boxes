@@ -1,5 +1,5 @@
 # __________ -----
-# boxes ------------------------------------------------------------
+# BOXES ------------------------------------------------------------
 
 
 
@@ -37,7 +37,7 @@ boxes <- function() {
 
 
 # __________ -----
-# box ------------------------------------------------------------
+# BOX ------------------------------------------------------------
 
 
 #' Create a new box
@@ -209,7 +209,7 @@ remove_fileext <- function(x) {
 }
 
 
-#' Show box storage content
+#' Show box content
 #' @param name box names. If `NULL`, the active box is used (`box_active()`).
 #' @returns Tibble with box content.
 #' @export
@@ -293,7 +293,7 @@ box_import <- function(file, name = NULL, overwrite = FALSE, activate = FALSE) {
 
 
 # __________ -----
-# PACK ------------------------------------------------------------
+# ITEMS ------------------------------------------------------------
 
 
 # prepare R object to be stored in database
@@ -304,23 +304,51 @@ prepare_object <- function(obj, serializer = "qs") {
 
 
 # delete row from box table
-id_delete <- function(id) {
-  con <- .box_connection()
+.item_delete <- function(id, name = NULL) {
+  con <- .box_connection(name = name)
+  on.exit(dbDisconnect(con))
   id <- DBI::dbQuoteString(con, id)
   q <- glue("delete from box where id = {id}")
   res <- DBI::dbSendQuery(con, q)
   dbClearResult(res)
-  dbDisconnect(con)
 }
 
 
 # get id column from box table
-ids_get <- function(box = NULL) {
-    con <- .box_connection(box)
+box_ids <- function(name = NULL) {
+    con <- .box_connection(name = name)
     res <- dbGetQuery(con, "select id from box")
     dbDisconnect(con)
     res |> unlist() |> unname() |> sort()
 }
+
+
+retrieve_object <- function(res) {
+  res$object |> unlist() |> qs::qdeserialize()
+}
+
+
+#' Remove an item from a box
+#' @param id Item id.
+#' @param name Box name. If `NULL`, the active box is used (`box_active()`).
+#' @returns `TRUE` if deletion succeeded, else `FALSE`.
+#' @export
+#' @rdname item-remove
+item_remove <- function(id, name = NULL) {
+  name <- name %||% box_active()
+  id <- as.character(id)
+  id_exists <- id %in% box_ids(name = name)
+  if (!id_exists) {
+    cli::cli_alert_warning("No item wth id {.emph {id}} in box {.emph {name}}. Nothing deleted.")
+    return(invisible(FALSE))
+  }
+  .item_delete(id, name = name)
+}
+
+
+#' @rdname item-remove
+#' @export
+remove <- item_remove
 
 
 #' Pack item into a box.
@@ -334,7 +362,7 @@ pack <- function(id, obj, info = NULL, tags = NULL) {
   if (length(id) == 0 || id == "") {
     cli::cli_abort("{.arg id} must have at least one character.")
   }
-  id_delete(id)
+  .item_delete(id)
   df <- tibble(
     id = id,
     object = prepare_object(obj),
@@ -373,7 +401,7 @@ pack_file <- function(id, path, info = NULL, tags = NULL) {
     class = glue("filetype: .{fs::path_ext(path)}"),
     changed = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   )
-  id_delete(id)
+  .item_delete(id)
   con <- .box_connection()
   on.exit(dbDisconnect(con))
   dbWriteTable(con, "box", df, append = TRUE)
@@ -381,14 +409,6 @@ pack_file <- function(id, path, info = NULL, tags = NULL) {
 
 
 
-
-# __________ -----
-# PICK ------------------------------------------------------------
-
-
-retrieve_object <- function(res) {
-  res$object |> unlist() |> qs::qdeserialize()
-}
 
 
 #' Get object from box
@@ -399,7 +419,7 @@ pick <- function(id, box = NULL) {
   id <- as.character(id)
   con <- .box_connection(box)
   on.exit(dbDisconnect(con))
-  id_exists <- id %in% ids_get(box)
+  id_exists <- id %in% box_ids(box)
   if (!id_exists) {
     cli::cli_alert_warning("id {.emph {id}} not found.")
     return(invisible(NULL))

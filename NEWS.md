@@ -1,6 +1,7 @@
 # boxed 0.1.1 (dev version)
 
-* renamed package to `boxed`. A depot becomes a `box`, `keep` becomes `pack`
+* `remove`, `item_remove`: remove an item from a box.
+* rename package to `boxed`. A depot becomes a `box`, `keep` becomes `pack`
 
 # keeper 0.1.0
 

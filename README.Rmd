@@ -11,18 +11,18 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-library(boxed)
+library(boxes)
 box_delete("test")
 ```
 
-# boxed
+# boxes
 
 <!-- badges -->
 [![R](https://img.shields.io/badge/language-R-blue)]()
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange)]()
 <!-- badges -->
 
-The goal of `boxed` is to provide a convenient way to store R objects or arbitrary files (plus additional notes) and retrieve them again later. 
+The goal of `boxes` is to provide a convenient way to store R objects or arbitrary files (plus additional notes) and retrieve them again later. 
 
 To use the package, you need to know a few terms:
 
@@ -37,7 +37,7 @@ Technically, each box is a separate SQLite database. You can create as many boxe
 ## Usage
 
 ```{r example}
-library(boxed)
+library(boxes)
 boxes()
 box_create("test")
 box_active()
@@ -54,7 +54,7 @@ boxes()
 
 ## Installation
 
-You can install the development version of `boxed` like so:
+You can install the development version of `boxes` like so:
 
 ```r
 # TBD

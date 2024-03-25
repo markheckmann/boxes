@@ -1,7 +1,7 @@
-Package: boxed
+Package: boxes
 Type: Package
 Title: Easily store and retrieve R objects
-Version: 0.1.1
+Version: 0.2.0
 Author: Mark Heckmann <heckmann.mark@gmail.com>
 Maintainer: Mark Heckmann <heckmann.mark@gmail.com>
 Description: Useful tools to easily store any R objects and retrieve them again later.
@@ -22,6 +22,7 @@ Imports:
     stringr,
     tibble,
     lubridate,
-    qs
+    qs,
+    rlang
 Suggests:
     styler

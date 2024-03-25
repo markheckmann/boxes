@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# boxed
+# boxes
 
 <!-- badges -->
 
@@ -9,7 +9,7 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange)]()
 <!-- badges -->
 
-The goal of `boxed` is to provide a convenient way to store R objects or
+The goal of `boxes` is to provide a convenient way to store R objects or
 arbitrary files (plus additional notes) and retrieve them again later.
 
 To use the package, you need to know a few terms:
@@ -26,12 +26,12 @@ SQLite database. You can create as many boxes as you need.
 ## Usage
 
 ``` r
-library(boxed)
+library(boxes)
 boxes()
 #> # A tibble: 1 × 6
 #>   name        path        size n_objects modified            created            
 #>   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-#> 1 markheckma… …ckmann.db   12K         1 2024-02-28 12:06:02 2024-02-28 11:25:40
+#> 1 markheckma… …ckmann.db   12K         1 2024-03-25 13:51:19 2024-03-25 13:50:49
 box_create("test")
 #> ℹ Activated box test
 box_active()
@@ -45,7 +45,7 @@ box()
 #> # A tibble: 1 × 6
 #>   id             object info                   tags  class   changed            
 #>   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-#> 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-02-28 12:11:29
+#> 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-25 13:51:50
 df <- pick("my_data")
 identical(df, mtcars)
 #> [1] TRUE
@@ -59,12 +59,12 @@ boxes()
 #> # A tibble: 1 × 6
 #>   name        path        size n_objects modified            created            
 #>   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-#> 1 markheckma… …ckmann.db   12K         1 2024-02-28 12:06:02 2024-02-28 11:25:40
+#> 1 markheckma… …ckmann.db   12K         1 2024-03-25 13:51:19 2024-03-25 13:50:49
 ```
 
 ## Installation
 
-You can install the development version of `boxed` like so:
+You can install the development version of `boxes` like so:
 
 ``` r
 # TBD

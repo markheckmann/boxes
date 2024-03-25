@@ -5,14 +5,14 @@
 \alias{remove}
 \title{Remove an item from a box}
 \usage{
-item_remove(id, name = NULL)
+item_remove(id, box = NULL)
 
-remove(id, name = NULL)
+remove(id, box = NULL)
 }
 \arguments{
 \item{id}{Item id.}
 
-\item{name}{Box name. If `NULL`, the active box is used (`box_active()`).}
+\item{box}{Box name. If `NULL`, the active box is used (`box_active()`).}
 }
 \value{
 `TRUE` if deletion succeeded, else `FALSE`.

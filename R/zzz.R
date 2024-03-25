@@ -1,10 +1,11 @@
 globalVariables(".h")
 
 # we use hoardr to manage objects on disk.
-.boxed_env <- rlang::env(
+.boxes_env <- rlang::env(
   hoard = hoardr::hoard(),
-  box = NULL
-)#
+  box = NULL,
+  rlang::empty_env()
+)
 
 
 get_default_box_name <- function() {
@@ -20,30 +21,30 @@ get_default_box_name <- function() {
 
 # there is one hoard object to manage all objects
 get_hoard <- function() {
-  .boxed_env$hoard
+  .boxes_env$hoard
 }
 
 
 get_box <- function() {
-  .boxed_env$box
+  .boxes_env$box
 }
 
 
 set_box <- function(name) {
-  .boxed_env$box <- name
+  .boxes_env$box <- name
 }
 
 
 .onLoad <- function(lib, pkg) {
   options(
-    boxed.silent = FALSE,
-    boxed.fileext = "db",
-    boxed.default_box = get_default_box_name()
+    boxes.silent = FALSE,
+    boxes.fileext = "db",
+    boxes.default_box = get_default_box_name()
   )
 
   # init box folder on startup
   h <- get_hoard()
-  h$cache_path_set(path = "boxed")
+  h$cache_path_set(path = "boxes")
   h$mkdir()
 
   # init default box
@@ -57,10 +58,10 @@ set_box <- function(name) {
 
 
 .opt_silent <- function() {
-  options()$boxed.silent
+  options()$boxes.silent
 }
 
 # convenience wrapper to get default shelf name
 .opt_default <- function() {
-  options()$boxed.default_box
+  options()$boxes.default_box
 }

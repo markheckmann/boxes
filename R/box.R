@@ -158,7 +158,7 @@ box_exists <- function(name) {
 
 
 remove_fileext <- function(x) {
-  ext <- options()$boxed.fileext
+  ext <- options()$boxes.fileext
   stringr::str_remove(x, glue("\\.{ext}$"))
 }
 
@@ -171,7 +171,7 @@ remove_fileext <- function(x) {
 
 
 .box_make_name <- function(name) {
-  fileext <- options()$boxed.fileext
+  fileext <- options()$boxes.fileext
   glue("{name}.{fileext}")
 }
 
@@ -200,7 +200,7 @@ remove_fileext <- function(x) {
 
 .box_init_db <- function(name) {
   con <- .box_connection(name, must_exist = FALSE)
-  file <- system.file("ext/box_init.sql", package = "boxed", mustWork = TRUE)
+  file <- system.file("ext/box_init.sql", package = "boxes", mustWork = TRUE)
   query <- readr::read_file(file)
   if (dbExistsTable(con, "box")) dbRemoveTable(con, "box")
   res <- dbSendStatement(con, query)
@@ -249,9 +249,9 @@ box_export <- function(name, file = NULL) {
   l <- list(
     name = name,
     db = db,
-    pkg_version = utils::packageVersion("boxed")
+    pkg_version = utils::packageVersion("boxes")
   )
-  class(l) <- c("boxed_export", class(l))
+  class(l) <- c("boxes_export", class(l))
   qs::qsave(l, file)
   cli::cli_alert_info("box file saved as {.path {file}}")
 }
@@ -268,7 +268,7 @@ box_import <- function(file, name = NULL, overwrite = FALSE, activate = FALSE) {
     cli::cli_abort("File not found: {.path {file}}")
   }
   l <- tryCatch(qs::qread(file), error = \(e) e)
-  if (!inherits(l, "boxed_export")) {
+  if (!inherits(l, "boxes_export")) {
     cli::cli_abort("File cannot be read. Does not seem to be a box export.")
   }
   if (is.null(name)) {
@@ -330,19 +330,19 @@ retrieve_object <- function(res) {
 
 #' Remove an item from a box
 #' @param id Item id.
-#' @param name Box name. If `NULL`, the active box is used (`box_active()`).
+#' @param box Box name. If `NULL`, the active box is used (`box_active()`).
 #' @returns `TRUE` if deletion succeeded, else `FALSE`.
 #' @export
 #' @rdname item-remove
-item_remove <- function(id, name = NULL) {
-  name <- name %||% box_active()
+item_remove <- function(id, box = NULL) {
+  box <- box %||% box_active()
   id <- as.character(id)
-  id_exists <- id %in% box_ids(name = name)
+  id_exists <- id %in% box_ids(name = box)
   if (!id_exists) {
     cli::cli_alert_warning("No item wth id {.emph {id}} in box {.emph {name}}. Nothing deleted.")
     return(invisible(FALSE))
   }
-  .item_delete(id, name = name)
+  .item_delete(id, name = box)
 }
 
 
@@ -352,15 +352,27 @@ remove <- item_remove
 
 
 #' Pack item into a box.
-#' @param id Unique ID of storage slot.
 #' @param obj Object to store.
+#' @param id Unique id as storage name. If `NULL`, the objects's name is used.
 #' @param info Some information about the object.
-#' @param tags One or more tags (character vector or comma separated string)
+#' @param tags One or more tags (character vector or comma separated string).
+#' @param box Name of box to use. If `NULL`, the active box used (`box_active()`).
+#' @param replace Replace object if `id` already exists (default `FALSE`).
+#' @returns Returns `id`.
 #' @export
-pack <- function(id, obj, info = NULL, tags = NULL) {
+#' @rdname item-pack
+item_pack <- function(obj, id = NULL, info = NULL, tags = NULL, box = NULL, replace = FALSE) {
+  if (is.null(id)) {
+    id <- rlang::enexpr(obj) |> as.character()
+    cli::cli_alert_info("No {.arg id} provided, using {.val {id}}")
+  }
   id <- as.character(id)
   if (length(id) == 0 || id == "") {
     cli::cli_abort("{.arg id} must have at least one character.")
+  }
+  id_exists <- id %in% box_ids(box)
+  if (id_exists && !replace) {
+    cli::cli_abort("id {.val {id}} already exists. Set {.arg replace = TRUE} to replace it.")
   }
   .item_delete(id)
   df <- tibble(
@@ -374,8 +386,13 @@ pack <- function(id, obj, info = NULL, tags = NULL) {
   con <- .box_connection()
   on.exit(dbDisconnect(con))
   res <- dbWriteTable(con, "box", df, append = TRUE)
-  invisible(res)
+  invisible(id)
 }
+
+
+#' @rdname item-pack
+#' @export
+pack <- item_pack
 
 
 #' Pack file into a box.
@@ -385,7 +402,7 @@ pack <- function(id, obj, info = NULL, tags = NULL) {
 #' @param tags One or more tags (character vector or comma separated string)
 #' @export
 #' @examples
-#' file <- system.file("ext/box_init.sql", package = "boxed")
+#' file <- system.file("ext/box_init.sql", package = "boxes")
 #' pack_file("code", file, "some SQL code")
 pack_file <- function(id, path, info = NULL, tags = NULL) {
   id <- as.character(id)
@@ -408,14 +425,12 @@ pack_file <- function(id, path, info = NULL, tags = NULL) {
 }
 
 
-
-
-
 #' Get object from box
 #' @param id Object id
 #' @param box box name. If `NULL`, the active box is used (`box_active()`).
 #' @export
-pick <- function(id, box = NULL) {
+#' @rdname item-pick
+item_pick <- function(id, box = NULL) {
   id <- as.character(id)
   con <- .box_connection(box)
   on.exit(dbDisconnect(con))
@@ -429,3 +444,8 @@ pick <- function(id, box = NULL) {
   res <- dbGetQuery(con, query)
   retrieve_object(res)
 }
+
+
+#' @rdname item-pick
+#' @export
+pick <- item_pick

@@ -19,6 +19,6 @@ pack_file(id, path, info = NULL, tags = NULL)
 Pack file into a box.
 }
 \examples{
-file <- system.file("ext/box_init.sql", package = "boxed")
+file <- system.file("ext/box_init.sql", package = "boxes")
 pack_file("code", file, "some SQL code")
 }

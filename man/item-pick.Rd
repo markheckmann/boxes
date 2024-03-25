@@ -5,14 +5,16 @@
 \alias{pick}
 \title{Get object from box}
 \usage{
-item_pick(id, box = NULL)
+item_pick(id, box = NULL, remove = FALSE)
 
-pick(id, box = NULL)
+pick(id, box = NULL, remove = FALSE)
 }
 \arguments{
 \item{id}{Object id}
 
-\item{box}{box name. If `NULL`, the active box is used (`box_active()`).}
+\item{box}{Box name. If `NULL`, the active box is used (`box_active()`).}
+
+\item{remove}{Remove object from box when retrieving it? (default `FALSE`)}
 }
 \description{
 Get object from box

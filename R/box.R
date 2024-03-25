@@ -51,7 +51,7 @@ box_create <- function(name, activate = TRUE) {
   .box_init_db(name)
   if (activate) {
     box_activate(name)
-    cli::cli_alert_info("Activated box {.emph {name}}")
+    cli::cli_alert_info("Activating box {.emph {name}}")
   }
 }
 
@@ -339,7 +339,7 @@ item_remove <- function(id, box = NULL) {
   id <- as.character(id)
   id_exists <- id %in% box_ids(name = box)
   if (!id_exists) {
-    cli::cli_alert_warning("No item wth id {.emph {id}} in box {.emph {name}}. Nothing deleted.")
+    cli::cli_alert_warning("No item with id {.emph {id}} in box {.emph {box}}. Nothing deleted.")
     return(invisible(FALSE))
   }
   .item_delete(id, box = box)
@@ -427,10 +427,14 @@ pack_file <- function(id, path, info = NULL, tags = NULL) {
 
 #' Get object from box
 #' @param id Object id
-#' @param box box name. If `NULL`, the active box is used (`box_active()`).
+#' @param box Box name. If `NULL`, the active box is used (`box_active()`).
+#' @param remove Remove object from box when retrieving it? (default `FALSE`)
 #' @export
 #' @rdname item-pick
-item_pick <- function(id, box = NULL) {
+item_pick <- function(id, box = NULL, remove = FALSE) {
+  if (!is.numeric(id) && !is.character(id)) {
+    cli::cli_alert_warning("{.arg id} is not numeric or string. Is the id correct?")
+  }
   id <- as.character(id)
   con <- .box_connection(box)
   on.exit(dbDisconnect(con))
@@ -439,10 +443,15 @@ item_pick <- function(id, box = NULL) {
     cli::cli_alert_warning("id {.emph {id}} not found.")
     return(invisible(NULL))
   }
-  id <- DBI::dbQuoteString(con, id)
-  query <- glue("select object from box where id = {id}")
+  id_sql <- DBI::dbQuoteString(con, id)
+  query <- glue("select object from box where id = {id_sql}")
   res <- dbGetQuery(con, query)
-  retrieve_object(res)
+  l <- retrieve_object(res)
+  if (remove) {
+    item_remove(id, box = box)
+    cli::cli_alert_success("Removed item {.val {id}} from box {.emph {box}}.")
+  }
+  l
 }
 
 

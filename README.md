@@ -15,9 +15,9 @@ arbitrary files (plus additional notes) and retrieve them again later.
 To use the package, you need to know a few terms:
 
 - `box`: A container to store things. Things can be R objects or files.
-- `item`: Anything that is stored inside the a box.
-- `pack`: adding an item to a box.
-- `pick`: retrieving an item from a box.
+- `item`: Anything object is stored inside a box.
+- `pack`: Adding an item to a box.
+- `pick`: Retrieving an item from a box.
 
 Boxes are stored on your disk. Hence, anything put into it will remain
 there until you delete the box. Technically, each box is a separate
@@ -42,14 +42,14 @@ boxes()
 # # A tibble: 1 × 6
 #   name        path        size n_objects modified            created            
 #   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-# 1 markheckma… …ckmann.db   12K         1 2024-03-25 18:28:00 2024-03-25 13:50:49
+# 1 markheckma… …ckmann.db   12K         3 2024-03-25 19:06:54 2024-03-25 13:50:49
 ```
 
 Create a new box and see that it is empty.
 
 ``` r
 box_create("test")
-# ℹ Activated box test
+# ℹ Activating box test
 box_active()
 # [1] "test"
 box()
@@ -66,7 +66,7 @@ box()
 # # A tibble: 1 × 6
 #   id             object info                   tags  class   changed            
 #   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-25 18:41:22
+# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-25 19:07:55
 ```
 
 Retrieve an object from a box and remove it.
@@ -90,5 +90,5 @@ boxes()
 # # A tibble: 1 × 6
 #   name        path        size n_objects modified            created            
 #   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-# 1 markheckma… …ckmann.db   12K         1 2024-03-25 18:28:00 2024-03-25 13:50:49
+# 1 markheckma… …ckmann.db   12K         3 2024-03-25 19:06:54 2024-03-25 13:50:49
 ```

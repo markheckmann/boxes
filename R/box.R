@@ -304,8 +304,8 @@ prepare_object <- function(obj, serializer = "qs") {
 
 
 # delete row from box table
-.item_delete <- function(id, name = NULL) {
-  con <- .box_connection(name = name)
+.item_delete <- function(id, box = NULL) {
+  con <- .box_connection(name = box)
   on.exit(dbDisconnect(con))
   id <- DBI::dbQuoteString(con, id)
   q <- glue("delete from box where id = {id}")
@@ -342,7 +342,7 @@ item_remove <- function(id, box = NULL) {
     cli::cli_alert_warning("No item wth id {.emph {id}} in box {.emph {name}}. Nothing deleted.")
     return(invisible(FALSE))
   }
-  .item_delete(id, name = box)
+  .item_delete(id, box = box)
 }
 
 

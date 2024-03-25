@@ -7,7 +7,7 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
+  comment = "#",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -34,29 +34,53 @@ To use the package, you need to know a few terms:
 Boxes are stored on your disk. Hence, anything put into it will remain there until you delete the box.
 Technically, each box is a separate SQLite database. You can create as many boxes as you need.
 
+
+## Installation
+
+You can install the dev version of `boxes` like so:
+
+```{r eval=FALSE}
+devtools::install_github("markheckmann/boxes")
+```
+
+
 ## Usage
+
+Load package and show existings boxes. A box with your username exists by default.
 
 ```{r example}
 library(boxes)
 boxes()
+```
+
+Create a new box and see that it is empty.
+
+```{r new-box}
 box_create("test")
 box_active()
 box()
-pack("my_data", mtcars, "Data to keep for later")
+```
+
+Add a new object to the box.
+
+```{r pack}
+pack(mtcars, "my_data", "Data to keep for later")
 box()
-df <- pick("my_data")
-identical(df, mtcars)
+```
+
+Retrieve an object from a box and remove it.
+
+```{r pick}
+x <- pick("my_data")
+identical(x, mtcars)
 remove("my_data")
+```
+
+Check if item is gone and delete box.
+
+```{r delete}
 box()
 box_delete("test")
 boxes()
-```
-
-## Installation
-
-You can install the development version of `boxes` like so:
-
-```r
-# TBD
 ```
 

@@ -9,7 +9,7 @@ box_create(name, activate = TRUE)
 \arguments{
 \item{name}{box name.}
 
-\item{activate}{Activate box after creation? Default is `TRUE`.}
+\item{activate}{Activate box after creation? Default is \code{TRUE}.}
 }
 \description{
 Create a new box

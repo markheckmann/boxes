@@ -11,7 +11,7 @@ box_delete(name, ..., .skip = TRUE)
 
 \item{...}{More comma separated box names (optional).}
 
-\item{.skip}{Skip box if it does not exist (default is `TRUE`).}
+\item{.skip}{Skip box if it does not exist (default is \code{TRUE}).}
 }
 \description{
 Delete one or more boxes. If a box does not exist it is skipped.

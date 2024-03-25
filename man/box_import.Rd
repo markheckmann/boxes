@@ -9,7 +9,7 @@ box_import(file, name = NULL, overwrite = FALSE, activate = FALSE)
 \arguments{
 \item{file}{Path to box file.}
 
-\item{name}{box name to use for imported data. If `NULL`, the original name (before export) will be used.}
+\item{name}{box name to use for imported data. If \code{NULL}, the original name (before export) will be used.}
 
 \item{overwrite}{Overwrite if box with name already exists?}
 

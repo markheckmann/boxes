@@ -19,18 +19,18 @@ pack(obj, id = NULL, info = NULL, tags = NULL, box = NULL, replace = FALSE)
 \arguments{
 \item{obj}{Object to store.}
 
-\item{id}{Unique id as storage name. If `NULL`, the objects's name is used.}
+\item{id}{Unique id as storage name. If \code{NULL}, the objects's name is used.}
 
 \item{info}{Some information about the object.}
 
 \item{tags}{One or more tags (character vector or comma separated string).}
 
-\item{box}{Name of box to use. If `NULL`, the active box used (`box_active()`).}
+\item{box}{Name of box to use. If \code{NULL}, the active box used (\code{box_active()}).}
 
-\item{replace}{Replace object if `id` already exists (default `FALSE`).}
+\item{replace}{Replace object if \code{id} already exists (default \code{FALSE}).}
 }
 \value{
-Returns `id`.
+Returns \code{id}.
 }
 \description{
 Pack item into a box.

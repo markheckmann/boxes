@@ -3,8 +3,21 @@
 \docType{package}
 \name{boxes-package}
 \alias{boxes-package}
-\title{boxes: Easily store and retrieve R objects}
+\title{boxes: store and retrieve arbitrary R objects}
 \description{
-Useful tools to easily store any R objects and retrieve them again later.
+\if{html}{\figure{logo.png}{options: style='float: right; padding-left: 10px;' alt='logo' width='120'}} The
+The goal of boxes is to provide a convenient way to store arbitrary R objects or files (plus additional notes)
+and retrieve them again later.
+}
+\details{
+To use the package, you need to know a few terms:
+\itemize{
+\item \code{box}: A container to store things. Things can be R objects or files.
+\item \code{item}: Anything object is stored inside a box.
+\item \code{pack}: Adding an item to a box.
+\item \code{pick}: Retrieving an item from a box.
+}
+
+Boxes are stored on your disk. Hence, anything put into it will remain there until you delete the box. Technically, each box is a separate SQLite database. You can create as many boxes as you need.
 }
 \keyword{internal}

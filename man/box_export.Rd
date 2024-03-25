@@ -9,8 +9,8 @@ box_export(name, file = NULL)
 \arguments{
 \item{name}{box name.}
 
-\item{file}{Where to store the box. We suggest the file ending (`.box`).
-If `NULL`, the box is exported to the current working dir.}
+\item{file}{Where to store the box. We suggest the file ending (\code{.box}).
+If \code{NULL}, the box is exported to the current working dir.}
 }
 \description{
 The exported box file contains the box name, the original box path and its name and the databse itself.

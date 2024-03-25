@@ -1,7 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# boxes
+# boxes: store and retrieve arbitrary R objects
+
+<a href="https://github.com/markheckmann/boxes"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 <!-- badges -->
 
@@ -66,7 +68,7 @@ box()
 # # A tibble: 1 × 6
 #   id             object info                   tags  class   changed            
 #   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-25 19:07:55
+# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-25 20:00:19
 ```
 
 Retrieve an object from a box and remove it.

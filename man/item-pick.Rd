@@ -12,9 +12,9 @@ pick(id, box = NULL, remove = FALSE)
 \arguments{
 \item{id}{Object id}
 
-\item{box}{Box name. If `NULL`, the active box is used (`box_active()`).}
+\item{box}{Box name. If \code{NULL}, the active box is used (\code{box_active()}).}
 
-\item{remove}{Remove object from box when retrieving it? (default `FALSE`)}
+\item{remove}{Remove object from box when retrieving it? (default \code{FALSE})}
 }
 \description{
 Get object from box

@@ -7,7 +7,7 @@
 box_path(name = NULL)
 }
 \arguments{
-\item{name}{box names. If `NULL`, the active box is used (`box_active()`).}
+\item{name}{box names. If \code{NULL}, the active box is used (\code{box_active()}).}
 }
 \description{
 Path to box database file on disk

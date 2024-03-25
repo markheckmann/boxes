@@ -12,10 +12,10 @@ remove(id, box = NULL)
 \arguments{
 \item{id}{Item id.}
 
-\item{box}{Box name. If `NULL`, the active box is used (`box_active()`).}
+\item{box}{Box name. If \code{NULL}, the active box is used (\code{box_active()}).}
 }
 \value{
-`TRUE` if deletion succeeded, else `FALSE`.
+\code{TRUE} if deletion succeeded, else \code{FALSE}.
 }
 \description{
 Remove an item from a box

@@ -7,9 +7,9 @@
 .box_connection(name = NULL, must_exist = TRUE)
 }
 \arguments{
-\item{name}{box names. If `NULL`, the active box is used (`box_active()`).}
+\item{name}{box names. If \code{NULL}, the active box is used (\code{box_active()}).}
 
-\item{must_exist}{Security mechanism. If `TRUE` (default), prevents creating a database with the given name, if it
+\item{must_exist}{Security mechanism. If \code{TRUE} (default), prevents creating a database with the given name, if it
 does not yet exist.}
 }
 \value{

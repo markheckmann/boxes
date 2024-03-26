@@ -17,7 +17,7 @@ arbitrary files (plus additional notes) and retrieve them again later.
 To use the package, you need to know a few terms:
 
 - `box`: A container to store things. Things can be R objects or files.
-- `item`: Anything object is stored inside a box.
+- `item`: Anything stored inside a box.
 - `pack`: Adding an item to a box.
 - `pick`: Retrieving an item from a box.
 
@@ -44,7 +44,7 @@ boxes()
 # # A tibble: 1 × 6
 #   name        path        size n_objects modified            created            
 #   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-# 1 markheckma… …ckmann.db   12K         3 2024-03-25 19:06:54 2024-03-25 13:50:49
+# 1 markheckma… …ckmann.db   12K         3 2024-03-26 14:41:29 2024-03-25 13:50:49
 ```
 
 Create a new box and see that it is empty.
@@ -68,7 +68,7 @@ box()
 # # A tibble: 1 × 6
 #   id             object info                   tags  class   changed            
 #   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-25 20:00:19
+# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-26 14:47:18
 ```
 
 Retrieve an object from a box and remove it.
@@ -92,5 +92,5 @@ boxes()
 # # A tibble: 1 × 6
 #   name        path        size n_objects modified            created            
 #   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-# 1 markheckma… …ckmann.db   12K         3 2024-03-25 19:06:54 2024-03-25 13:50:49
+# 1 markheckma… …ckmann.db   12K         3 2024-03-26 14:41:29 2024-03-25 13:50:49
 ```

@@ -29,7 +29,7 @@ The goal of `boxes` is to provide a convenient way to store R objects or arbitra
 To use the package, you need to know a few terms:
 
   * `box`: A container to store things. Things can be R objects or files.
-  * `item`: Anything object is stored inside a box. 
+  * `item`: Anything stored inside a box. 
   * `pack`: Adding an item to a box.
   * `pick`: Retrieving an item from a box.
 

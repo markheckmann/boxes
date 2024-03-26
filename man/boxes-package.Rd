@@ -13,7 +13,7 @@ and retrieve them again later.
 To use the package, you need to know a few terms:
 \itemize{
 \item \code{box}: A container to store things. Things can be R objects or files.
-\item \code{item}: Anything object is stored inside a box.
+\item \code{item}: Anything stored in a box.
 \item \code{pack}: Adding an item to a box.
 \item \code{pick}: Retrieving an item from a box.
 }

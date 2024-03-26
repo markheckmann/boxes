@@ -6,7 +6,7 @@
 #'
 #' To use the package, you need to know a few terms:
 #' * `box`: A container to store things. Things can be R objects or files.
-#' * `item`: Anything object is stored inside a box.
+#' * `item`: Anything stored in a box.
 #' * `pack`: Adding an item to a box.
 #' * `pick`: Retrieving an item from a box.
 #'

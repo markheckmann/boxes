@@ -28,9 +28,10 @@ boxes <- function() {
   df |>
     mutate(
       name = path |> basename() |> remove_fileext(),
-      n_objects = box_size(name)
+      active = ifelse(name == get_box(), "*", "\u2800"),
+      objects = box_size(name)
     ) |>
-    select(name, path, size, n_objects, modified = modification_time, created = birth_time) |>
+    select(active, name, objects, size, last_modified = modification_time, created = birth_time) |>
     arrange(name)
 }
 

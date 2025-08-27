@@ -42,9 +42,9 @@ by default.
 library(boxes)
 boxes()
 # # A tibble: 1 × 6
-#   name        path        size n_objects modified            created            
-#   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-# 1 markheckma… …ckmann.db   12K         3 2024-03-26 14:41:29 2024-03-25 13:50:49
+#   active name         objects       size last_modified       created            
+#   <chr>  <chr>          <int> <fs::byte> <dttm>              <dttm>             
+# 1 *      markheckmann       2      32.9M 2025-08-27 09:30:00 2024-03-25 13:50:49
 ```
 
 Create a new box and see that it is empty.
@@ -68,7 +68,7 @@ box()
 # # A tibble: 1 × 6
 #   id             object info                   tags  class   changed            
 #   <chr>          <blob> <chr>                  <chr> <chr>   <dttm>             
-# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2024-03-26 14:47:18
+# 1 my_data <raw 1.43 kB> Data to keep for later ""    data.f… 2025-08-27 10:16:29
 ```
 
 Retrieve an object from a box and remove it.
@@ -90,7 +90,7 @@ box()
 box_delete("test")
 boxes()
 # # A tibble: 1 × 6
-#   name        path        size n_objects modified            created            
-#   <chr>       <fs::path> <fs:>     <int> <dttm>              <dttm>             
-# 1 markheckma… …ckmann.db   12K         3 2024-03-26 14:41:29 2024-03-25 13:50:49
+#   active name         objects       size last_modified       created            
+#   <chr>  <chr>          <int> <fs::byte> <dttm>              <dttm>             
+# 1 ⠀      markheckmann       2      32.9M 2025-08-27 09:30:00 2024-03-25 13:50:49
 ```

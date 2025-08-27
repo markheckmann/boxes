@@ -8,7 +8,7 @@ Description: Useful tools to easily store any R objects and retrieve them again 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.2
 Imports:
     utils,
     DBI,

@@ -217,6 +217,7 @@ remove_fileext <- function(x) {
 box <- function(name = NULL) {
   con <- .box_connection(name = name)
   on.exit(dbDisconnect(con))
+  cli::cli_h3("active box {.val {get_box()}}")
   res <- dbGetQuery(con, "select * from box") |> as_tibble()
   changed <- NULL  # avoid R CMD CHECK note
   res |> mutate(changed = lubridate::as_datetime(changed))

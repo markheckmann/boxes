@@ -84,9 +84,9 @@ box_create <- function(name, activate = TRUE) {
 #' @param .skip Skip box if it does not exist (default is `TRUE`).
 #' @export
 #' @examples \dontrun{
-#'   box_delete("a")
-#'   box_delete(c("a", "b"))
-#'   box_delete("a", "b")  # same as above
+#' box_delete("a")
+#' box_delete(c("a", "b"))
+#' box_delete("a", "b") # same as above
 #' }
 box_delete <- function(name, ..., .skip = TRUE) {
   dots <- list(...)
@@ -120,8 +120,10 @@ box_active <- function() {
 box_path <- function(name = NULL) {
   name <- name %||% box_active()
   df <- boxes()
-  path <- NULL  # avoid R CMD CHECK note
-  df |> dplyr::filter(name == !!name) |> dplyr::pull(path)
+  path <- NULL # avoid R CMD CHECK note
+  df |>
+    dplyr::filter(name == !!name) |>
+    dplyr::pull(path)
 }
 
 
@@ -217,16 +219,33 @@ remove_fileext <- function(x) {
 box <- function(name = NULL) {
   con <- .box_connection(name = name)
   on.exit(dbDisconnect(con))
-  cli::cli_h3("active box {.val {get_box()}}")
   res <- dbGetQuery(con, "select * from box") |> as_tibble()
-  changed <- NULL  # avoid R CMD CHECK note
-  res |> mutate(changed = lubridate::as_datetime(changed))
+  changed <- NULL # avoid R CMD CHECK note
+  res <- res |> mutate(changed = lubridate::as_datetime(changed))
+  class(res) <- c("box_df", class(res))
+  res
+}
+
+
+#' Print a box dataframe
+#'
+#' Adds the active box at top before printing dataframe.
+#'
+#' @param x A `box_df` object.
+#' @param ... Passed on.
+#' @export
+#' @keywords internal
+print.box_df <- function(x, ...) {
+  cli::cli_h2("active box {.val {get_box()}}")
+  NextMethod()
 }
 
 
 # Check that box works
 box_works <- function(name) {
-  tryCatch(is.integer(box_size(name)), error = \(e) {FALSE})
+  tryCatch(is.integer(box_size(name)), error = \(e) {
+    FALSE
+  })
 }
 
 
@@ -283,7 +302,7 @@ box_import <- function(file, name = NULL, overwrite = FALSE, activate = FALSE) {
   h <- get_hoard()
   db_path <- file.path(h$cache_path_get(), glue("{name}.db"))
   writeBin(l$db, db_path)
-  if (!box_works(name)) {  # delete of box is corrupted
+  if (!box_works(name)) { # delete of box is corrupted
     fs::file_delete(db_path)
     cli::cli_abort("box cannot be imported. File appears to be corrupted.")
   }
@@ -318,15 +337,20 @@ prepare_object <- function(obj, serializer = "qs") {
 
 # get id column from box table
 box_ids <- function(name = NULL) {
-    con <- .box_connection(name = name)
-    res <- dbGetQuery(con, "select id from box")
-    dbDisconnect(con)
-    res |> unlist() |> unname() |> sort()
+  con <- .box_connection(name = name)
+  res <- dbGetQuery(con, "select id from box")
+  dbDisconnect(con)
+  res |>
+    unlist() |>
+    unname() |>
+    sort()
 }
 
 
 retrieve_object <- function(res) {
-  res$object |> unlist() |> qs::qdeserialize()
+  res$object |>
+    unlist() |>
+    qs::qdeserialize()
 }
 
 

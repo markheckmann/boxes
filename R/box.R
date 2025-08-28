@@ -317,6 +317,35 @@ box_import <- function(file, name = NULL, overwrite = FALSE, activate = FALSE) {
 
 
 
+#' Purge (expired) box items
+#'
+#' By default, removes items that have expired from active box.
+#'
+#' @param name Name of box.
+#' @param cutoff_date Threshold (date / datetime) for expiration. If `NULL` (default) the current time is used.
+#' @param purge_all Remove all items? If `FALSE` (default), only expired items (before `cutoff_date`) are removed.
+#' @export
+box_purge <- function(name = NULL, cutoff_date = Sys.time(), purge_all = FALSE) {
+  cutoff_date <- lubridate::as_datetime(cutoff_date)
+  name <- name %||% box_active()
+  .df <- box(name)
+  if (!purge_all) {
+    .df <- .df |> dplyr::filter(!is.na(expires))
+    .df <- .df |> dplyr::filter(expires <= cutoff_date)
+  }
+  ids_to_purge <- .df |> dplyr::pull(id)
+  if (length(ids_to_purge) == 0) {
+    cli::cli_alert_info("No ids found to purge in box {.emph {name}}")
+    return(invisible(NULL))
+  }
+  for (.id in ids_to_purge) {
+    item_remove(.id, box = name)
+  }
+  n_purged <- length(ids_to_purge)
+  cli::cli_alert_success("Successfully removed {.val {n_purged}} item{?s} from box {.emph {name}}: {.val {ids_to_purge}}")
+}
+
+
 # __________ -----
 # ITEMS ------------------------------------------------------------
 

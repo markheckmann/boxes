@@ -53,7 +53,7 @@ set_box <- function(name) {
     box_create(name)
     cli::cli_alert_info("Created default box {.emph {name}}")
   }
-  box_activate(name)
+  box_switch(name)
 }
 
 

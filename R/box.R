@@ -54,7 +54,7 @@ box_create <- function(name, activate = TRUE) {
   }
   .box_init_db(name)
   if (activate) {
-    box_activate(name)
+    box_switch(name)
     cli::cli_alert_info("Activating box {.emph {name}}")
   }
 }
@@ -103,7 +103,7 @@ box_delete <- function(name, ..., .skip = TRUE) {
 #' Switch active box
 #' @param name box name to be activated.
 #' @export
-box_activate <- function(name) {
+box_switch <- function(name) {
   .abort_if_box_not_exists(name)
   set_box(name)
 }
@@ -311,7 +311,7 @@ box_import <- function(file, name = NULL, overwrite = FALSE, activate = FALSE) {
     cli::cli_abort("box cannot be imported. File appears to be corrupted.")
   }
   cli::cli_alert_info("Imported {.path {basename(file)}} as box {.emph {name}}")
-  if (activate) box_activate(name)
+  if (activate) box_switch(name)
   invisible(name)
 }
 

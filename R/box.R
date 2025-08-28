@@ -452,12 +452,18 @@ pack_file <- function(id, path, info = NULL, tags = NULL) {
 
 
 #' Get object from box
-#' @param id Object id
+#' @param id Object id. If `NULL` (default), the latest item is picked.
 #' @param box Box name. If `NULL`, the active box is used (`box_active()`).
 #' @param remove Remove object from box when retrieving it? (default `FALSE`)
 #' @export
 #' @rdname item-pick
-item_pick <- function(id, box = NULL, remove = FALSE) {
+item_pick <- function(id = NULL, box = NULL, remove = FALSE) {
+  box <- box %||% get_box()
+  if (is.null(id)) {
+    .df_box <- box(name = box) |> dplyr::slice_max(changed)
+    id <- .df_box$id
+    cli::cli_alert_info("{.arg id} is {.val NULL}. Picking latest item from box {.val {box}}: {.val {id}}")
+  }
   if (!is.numeric(id) && !is.character(id)) {
     cli::cli_alert_warning("{.arg id} is not numeric or string. Is the id correct?")
   }

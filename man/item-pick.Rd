@@ -5,12 +5,12 @@
 \alias{pick}
 \title{Get object from box}
 \usage{
-item_pick(id, box = NULL, remove = FALSE)
+item_pick(id = NULL, box = NULL, remove = FALSE)
 
-pick(id, box = NULL, remove = FALSE)
+pick(id = NULL, box = NULL, remove = FALSE)
 }
 \arguments{
-\item{id}{Object id}
+\item{id}{Object id. If \code{NULL} (default), the latest item is picked.}
 
 \item{box}{Box name. If \code{NULL}, the active box is used (\code{box_active()}).}
 

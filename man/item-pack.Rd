@@ -11,10 +11,19 @@ item_pack(
   info = NULL,
   tags = NULL,
   box = NULL,
-  replace = FALSE
+  replace = FALSE,
+  expires = NULL
 )
 
-pack(obj, id = NULL, info = NULL, tags = NULL, box = NULL, replace = FALSE)
+pack(
+  obj,
+  id = NULL,
+  info = NULL,
+  tags = NULL,
+  box = NULL,
+  replace = FALSE,
+  expires = NULL
+)
 }
 \arguments{
 \item{obj}{Object to store.}
@@ -28,6 +37,9 @@ pack(obj, id = NULL, info = NULL, tags = NULL, box = NULL, replace = FALSE)
 \item{box}{Name of box to use. If \code{NULL}, the active box used (\code{box_active()}).}
 
 \item{replace}{Replace object if \code{id} already exists (default \code{FALSE}).}
+
+\item{expires}{Set an expiry date. Understands \if{html}{\out{<date>}}, \if{html}{\out{<datetime>}}, a \link{lubridate} \if{html}{\out{<duration>}}  or \if{html}{\out{<period>}} (both added
+to current date). Strings are interpreted if possible. Expired objects are removed via \code{box_purge()}.}
 }
 \value{
 Returns \code{id}.

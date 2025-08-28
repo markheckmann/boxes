@@ -18,8 +18,8 @@ Delete one or more boxes. If a box does not exist it is skipped.
 }
 \examples{
 \dontrun{
-  box_delete("a")
-  box_delete(c("a", "b"))
-  box_delete("a", "b")  # same as above
+box_delete("a")
+box_delete(c("a", "b"))
+box_delete("a", "b") # same as above
 }
 }

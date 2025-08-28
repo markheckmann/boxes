@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS BOX (
   info TEXT,
   tags TEXT,
   class TEXT,
-  changed TIMESTAMP
+  changed TIMESTAMP,
+  expires TIMESTAMP
 );

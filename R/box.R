@@ -19,7 +19,11 @@ boxes_list <- function(full_path = FALSE) {
 #' Show details of all boxes
 #' @export
 boxes <- function() {
-  name <- path <- size <- n_objects <- modification_time <- birth_time <- NULL # avoid 'no visible binding for global variable' in R CMD CHECK
+  .get_boxes_df() |> select(-path)
+}
+
+
+.get_boxes_df <- function() {
   paths <- boxes_list(full_path = TRUE)
   df <- fs::file_info(paths)
   if (nrow(df) == 0) {
@@ -31,10 +35,9 @@ boxes <- function() {
       active = ifelse(name == get_box(), "*", "\u2800"),
       objects = box_size(name)
     ) |>
-    select(active, name, objects, size, last_modified = modification_time, created = birth_time) |>
+    select(active, name, objects, size, last_modified = modification_time, created = birth_time, path) |>
     arrange(name)
 }
-
 
 
 # __________ -----
@@ -119,8 +122,7 @@ box_active <- function() {
 #' @export
 box_path <- function(name = NULL) {
   name <- name %||% box_active()
-  df <- boxes()
-  path <- NULL # avoid R CMD CHECK note
+  df <- .get_boxes_df()
   df |>
     dplyr::filter(name == !!name) |>
     dplyr::pull(path)
@@ -220,8 +222,10 @@ box <- function(name = NULL) {
   con <- .box_connection(name = name)
   on.exit(dbDisconnect(con))
   res <- dbGetQuery(con, "select * from box") |> as_tibble()
-  changed <- NULL # avoid R CMD CHECK note
-  res <- res |> mutate(changed = lubridate::as_datetime(changed))
+  res <- res |> mutate( # all datetimes are stored as UTC
+    changed = as_local_datetime(changed),
+    expires = as_local_datetime(expires)
+  )
   class(res) <- c("box_df", class(res))
   res
 }
@@ -384,14 +388,17 @@ remove <- item_remove
 #' @param tags One or more tags (character vector or comma separated string).
 #' @param box Name of box to use. If `NULL`, the active box used (`box_active()`).
 #' @param replace Replace object if `id` already exists (default `FALSE`).
+#' @param expires Set an expiry date. Understands <date>, <datetime>, a [lubridate] <duration>  or <period> (both added
+#'   to current date). Strings are interpreted if possible. Expired objects are removed via `box_purge()`.
 #' @returns Returns `id`.
 #' @export
 #' @rdname item-pack
-item_pack <- function(obj, id = NULL, info = NULL, tags = NULL, box = NULL, replace = FALSE) {
+item_pack <- function(obj, id = NULL, info = NULL, tags = NULL, box = NULL, replace = FALSE, expires = NULL) {
   if (is.null(id)) {
     id <- rlang::enexpr(obj) |> as.character()
     cli::cli_alert_info("No {.arg id} provided, using {.val {id}}")
   }
+  expires <- calc_expiration_date(expires)
   id <- as.character(id)
   if (length(id) == 0 || id == "") {
     cli::cli_abort("{.arg id} must have at least one character.")
@@ -401,13 +408,15 @@ item_pack <- function(obj, id = NULL, info = NULL, tags = NULL, box = NULL, repl
     cli::cli_abort("id {.val {id}} already exists. Set {.arg replace = TRUE} to replace it.")
   }
   .item_delete(id)
+
   df <- tibble(
     id = id,
     object = prepare_object(obj),
     info = info,
     tags = paste(tags, collapse = ","),
     class = paste(class(obj), collapse = ","),
-    changed = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    changed = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+    expires = expires
   )
   con <- .box_connection()
   on.exit(dbDisconnect(con))
